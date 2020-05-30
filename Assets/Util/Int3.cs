@@ -21,5 +21,13 @@ public struct Int3
     }
 
     public static implicit operator bool(Int3? int3) => int3 != null;
+
+    public static readonly Int3 PlusX = new Int3(1, 0, 0);
+    public static readonly Int3 MinusX = new Int3(-1, 0, 0);
+    public static readonly Int3 PlusY = new Int3(0, 1, 0);
+    public static readonly Int3 MinusY = new Int3(0, -1, 0);
+    public static readonly Int3 PlusZ = new Int3(0, 0, 1);
+    public static readonly Int3 MinusZ = new Int3(0, 0, -1);
+    public static readonly Int3 Zero = new Int3(0, 0, 0);
 }
 
