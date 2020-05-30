@@ -7,9 +7,18 @@ public class CoreTimer : Singleton<CoreTimer>
     [SerializeField] private float PulseTime;
     private int CurrentPulse;
 
-    private bool Running;
-    public void TurnTimerOn() => Running = true;
-    public void TurnTimerOff() => Running = false;
+    private bool _running;
+    public bool Running
+    {
+        get
+        {
+            return _running;
+        }
+        set
+        {
+            _running = value;
+        }
+    }
 
     public event Action OnPulse;
 
