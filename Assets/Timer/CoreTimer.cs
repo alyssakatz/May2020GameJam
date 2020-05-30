@@ -27,17 +27,22 @@ public class CoreTimer : Singleton<CoreTimer>
     void Start()
     {
         Running = true;
+        OnPulse = delegate { };
+        StartCoroutine(Timer());
     }
 
 
     IEnumerator Timer()
     {
-        while(Running)
+        while(true)
         {
-            yield return new WaitForSeconds(PulseTime);
-            OnPulse.Invoke();
-            PulsesSinceStart++;
-            LastPulseTime = Time.time;
+            if(Running)
+            {
+                yield return new WaitForSeconds(PulseTime);
+                PulsesSinceStart++;
+                LastPulseTime = Time.time;
+                OnPulse.Invoke();
+            }
         }
     }
 }

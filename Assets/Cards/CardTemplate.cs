@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CardTemplate : MonoBehaviour
+public abstract class CardTemplate
 {
     // Start is called before the first frame update
     void Start()
