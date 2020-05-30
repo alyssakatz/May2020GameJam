@@ -5,7 +5,6 @@ using UnityEngine;
 public class BlockSystem : MonoBehaviour
 {
     public const int BlockSize = 1;
-
     public struct Int3
     {
         public readonly int x, y, z;
@@ -18,14 +17,9 @@ public class BlockSystem : MonoBehaviour
         }
     }
 
-    Dictionary<Int3, Block> blocks;
+    Block[,,] blocks;
     [SerializeField]
     BlockSystemGenerator blockGenerator;
-
-    Block GetBlock(int x, int y, int z)
-    {
-        return blocks[new Int3(x, y, z)];
-    }
 
     public Vector3 GetBlockPosition(Int3 location)
     {
@@ -39,10 +33,17 @@ public class BlockSystem : MonoBehaviour
     void Start()
     {
         blocks = blockGenerator.GenerateBlocks();
-        foreach(Int3 position in blocks.Keys)
+        for (int x = 0; x < blocks.GetLength(0); x++)
         {
-            Block block = blocks[position];
-            block.gameObject.transform.position = GetBlockPosition(position);
+            for (int y = 0; y < blocks.GetLength(1); y++)
+            {
+                for (int z = 0; z < blocks.GetLength(2); z++)
+                {
+                    blocks[x,y,z].name = $"{this.gameObject.name}: {blocks[x,y,z].name} {x} {y} {z}";
+                    blocks[x, y, z].transform.parent = this.transform;
+                    blocks[x, y, z].transform.position = GetBlockPosition(x, y, z);
+                }
+            }
         }
     }
 }

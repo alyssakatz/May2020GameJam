@@ -5,5 +5,5 @@ using static BlockSystem;
 
 public abstract class BlockSystemGenerator : MonoBehaviour
 {
-    public abstract Dictionary<Int3, Block> GenerateBlocks();
+    public abstract Block[,,] GenerateBlocks();
 }

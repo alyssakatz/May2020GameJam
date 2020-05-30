@@ -8,19 +8,17 @@ public class SolidBlockSystemGenerator : BlockSystemGenerator
 
     public int Size;
     
-    public override Dictionary<Int3, Block> GenerateBlocks()
+    public override Block[,,] GenerateBlocks()
     {
-        Dictionary<Int3, Block> blocks = new Dictionary<Int3, Block>();
+        Block[,,] blocks = new Block[Size, Size, Size];
         for (int x = 0; x < Size; x++)
         {
             for (int y = 0; y < Size; y++)
             {
                 for (int z = 0; z < Size; z++)
                 {
-                    //Note - this seems dubious to need to remember to do this in every generator.
                     GameObject block = Instantiate(BlockPrefab);
-                    blocks.Add(new Int3(x, y, z), block.GetComponent<Block>());
-                    block.name = $"Stone Block {x} {y} {z}";
+                    blocks[x, y, z] = block.GetComponent<Block>();
                 }
             }
         }
