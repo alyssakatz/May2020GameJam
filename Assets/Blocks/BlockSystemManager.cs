@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BlockSystemManager : Singleton<BlockSystemManager>
+public class BlockSystemManager : MonoSingleton<BlockSystemManager>
 {
     public BlockSystem PlayerSystem;
     public BlockSystem EnemySystem;

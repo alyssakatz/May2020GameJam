@@ -8,7 +8,7 @@ using UnityEngine.InputSystem.Interactions;
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(Rigidbody))]
 [DisallowMultipleComponent]
-public class PlayerController : Singleton<PlayerController>
+public class PlayerController : MonoSingleton<PlayerController>
 {
     private PlayerInputActions _playerInputActions;
     private Rigidbody _rigidBody => GetComponent<Rigidbody>();

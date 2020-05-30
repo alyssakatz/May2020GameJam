@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using UnityEditor;
 
 public class Playspace : Singleton<Playspace>
 { 
     private System.Random DeckRNG;
     private Queue<CardInfo> Deck;
     private Stack<CardInfo> Discard;
-
 
     public enum Hand
     {
@@ -21,8 +21,9 @@ public class Playspace : Singleton<Playspace>
     public CardInfo? LeftCard;
     public CardInfo? MiddleCard;
     public CardInfo? RightCard;
+    private CardInfo? _nullCard = null;
 
-    public Playspace(int[] cardsInDeck)
+    public void Initialize(int[] cardsInDeck)
     {
         DeckRNG = new System.Random();
         Deck = new Queue<CardInfo>();
@@ -53,13 +54,13 @@ public class Playspace : Singleton<Playspace>
         {
             if (withDiscard)
             {
-                DiscardCard(CardAtPosition(position));
+                DiscardCard(ref CardAtPosition(position));
             }
-            DrawCard(CardAtPosition(position));
+            DrawCard(ref CardAtPosition(position));
         }
     }
 
-    public void DiscardCard(CardInfo? card)
+    public void DiscardCard(ref CardInfo? card)
     {
         if(card != null)
         {
@@ -68,7 +69,7 @@ public class Playspace : Singleton<Playspace>
         }
     }
 
-    public void DrawCard(CardInfo? card)
+    public void DrawCard(ref CardInfo? card)
     {
         if (Deck.Count == 0)
         {
@@ -77,16 +78,14 @@ public class Playspace : Singleton<Playspace>
         card = card ?? Deck.Dequeue();
     }
 
-    public CardInfo? CardAtPosition(Hand position)
+    public ref CardInfo? CardAtPosition(Hand position)
     {
         switch(position)
         {
-            case Hand.LeftCard: return LeftCard;
-            case Hand.MiddleCard: return MiddleCard;
-            case Hand.RightCard: return RightCard;
+            case Hand.LeftCard: return ref LeftCard;
+            case Hand.MiddleCard: return ref MiddleCard;
+            case Hand.RightCard: return ref RightCard;
         }
-        return null;
+        return ref _nullCard;
     }
-
-
 }

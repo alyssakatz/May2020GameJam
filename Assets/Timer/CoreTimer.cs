@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-public class CoreTimer : Singleton<CoreTimer>
+public class CoreTimer : MonoSingleton<CoreTimer>
 {
     [SerializeField] private float PulseTime;
     private int PulsesSinceStart;

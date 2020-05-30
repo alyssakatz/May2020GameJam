@@ -1,29 +1,9 @@
-﻿using UnityEngine;
-
-public class Singleton<T> : MonoBehaviour where T : Singleton<T>
+﻿using System;
+public class Singleton<T> where T : class, new()
 {
-    private static readonly object _lock = new object();
-    private static T _instance;
-    public static T Instance
-    {
-        get
-        {
-            lock (_lock)
-            {
-                if (_instance == null)
-                {
-                    _instance = (T)FindObjectOfType(typeof(T));
-                    if(_instance == null)
-                    {
-                        Debug.LogWarning("You're trying to access a singleton that's not currently loaded!");
-                    }
-                }
-            }
-            return _instance;
-        }
-        private set
-        {
-            _instance = value;
-        }
-    }
+    protected Singleton() { }
+
+    private static readonly Lazy<T> instance = new Lazy<T>(() => new T());
+
+    public static T Instance { get { return instance.Value; } }
 }
