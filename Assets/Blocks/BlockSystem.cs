@@ -59,7 +59,7 @@ public class BlockSystem : MonoBehaviour
         if (!IsInBlockSystem(x, 0, z)) return null;
         for (int y = blocks.GetLength(1) - 1; y >= 0; y--)
         {
-            if (blocks[x, y, z]) return blocks[x, y, z].LocalLocation;
+            if (blocks[x, y, z]) return new Int3(x,y,z);
         }
         return null;
     }

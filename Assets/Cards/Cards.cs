@@ -27,7 +27,12 @@
         TargetingRange = 2,
         Execute = (CardTargettingInfo info) =>
         {
+            Int3? toBreak = BlockSystemManager.Instance.AlignedSystem.GetHighestSolidLocation(info.targetLocation);
 
+            if (toBreak)
+            {
+                BlockSystemManager.Instance.AlignedSystem.Break((Int3)toBreak);
+            }
         },
         LoadTime = 5
     };

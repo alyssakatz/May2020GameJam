@@ -26,11 +26,22 @@ public class PlayerController : Singleton<PlayerController>
     public bool IsAnchored = false;
 
     public float ContinuousTargetingDelay = 0.5f;
-    private Block _targetBlock;
+    private Int3? _targetPosition;
     private float _holdTime = 0.0f;
     private int _samples = 0;
     private Vector2 _sumTargetingDirection = new Vector2(0, 0);
 
+    private void OnDrawGizmos()
+    {
+        if (!_targetPosition || !BlockSystemManager.Instance.AlignedSystem.IsInBlockSystem((Int3)_targetPosition)) return;
+        Block block = BlockSystemManager.Instance.AlignedSystem.GetBlockByLocation((Int3)_targetPosition);
+        if (block)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(block.transform.position, 0.5f);
+        }
+        
+    }
     void Awake()
     {
         _playerInputActions = new PlayerInputActions();
@@ -52,31 +63,26 @@ public class PlayerController : Singleton<PlayerController>
      */
     void SubscribeToCardEvents(InputAction input, CardInfo? card)
     {
+        card = Cards.CardList[1]; //the playspace is broken, so I do this.
         input.started +=
             context =>
             {
+                
                 if (card != null && card.Value.CanTarget && context.interaction is SlowTapInteraction)
                 {
-                    OnTarget(context, card);
+                    Debug.Log("TARGET" + context.interaction);
+                    OnTarget(context, (CardInfo) card);
                 }
             };
 
         input.performed +=
             context =>
             {
+                
                 if (card != null)
                 {
-                    OnPlayCard(context, card);
-                }
-            };
-
-        // Is this necessary if Tap gets priority?
-        input.canceled +=
-            context =>
-            {
-                if (card != null && context.interaction is SlowTapInteraction)
-                {
-                    OnPlayCard(context, card);
+                    Debug.Log("PLAY" + context.interaction);
+                    OnPlayCard(context, (CardInfo) card);
                 }
             };
     }
@@ -93,7 +99,18 @@ public class PlayerController : Singleton<PlayerController>
             {
                 Vector2 averageTargetingDirection = ApplyThresholding(_sumTargetingDirection / _samples);
 
-                // TODO Select next tile
+                //convert to correct int3 offset
+                if(Math.Abs(averageTargetingDirection.x) > Math.Abs(averageTargetingDirection.y))
+                {
+                    averageTargetingDirection.y = 0;
+                }else
+                {
+                    averageTargetingDirection.x = 0;
+                }
+
+                Int3 offset = new Int3(Math.Sign(averageTargetingDirection.x), 0, Math.Sign(averageTargetingDirection.y));
+
+                _targetPosition += offset;
 
                 // Reset
                 _holdTime -= ContinuousTargetingDelay;
@@ -131,19 +148,38 @@ public class PlayerController : Singleton<PlayerController>
         _playerInputActions.Disable();
     }
 
-    public void OnPlayCard(InputAction.CallbackContext context, CardInfo? card)
+    public void OnPlayCard(InputAction.CallbackContext context, CardInfo card)
     {
+        Debug.Log("Playing card " + card);
+
+        if (!_targetPosition && card.BaseRange.HasValue)
+        {
+            _targetPosition = CalculateBaseTargetPosition((int)card.BaseRange);
+        }
+
+        CardTargettingInfo info = new CardTargettingInfo((Int3) _targetPosition);
+
+        //this isn't supposed to be how cards are played, there's supposed to be a delay, but ignore that for now.
+        card.Execute(info);
+
         IsAnchored = false;
+        _targetPosition = null;
         Debug.Log("Playing card " + card);
     }
 
-    public void OnTarget(InputAction.CallbackContext context, CardInfo? card)
+    public void OnTarget(InputAction.CallbackContext context, CardInfo card)
     {
         IsAnchored = true;
         _holdTime = 0.0f;
         _samples = 0;
         _sumTargetingDirection = new Vector2();
-        Debug.Log("Targeting with card " + card);
+
+        //set initial targetted block
+        Int3 currentPosition = BlockSystemManager.Instance.AlignedSystem.GetBlockLocationByWorldPosition(transform.position).AlignedLocation;
+
+        _targetPosition = CalculateBaseTargetPosition((int) card.BaseRange);
+
+        Debug.Log("Targeting with card " + card + " starting at location " + _targetPosition);
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -160,5 +196,12 @@ public class PlayerController : Singleton<PlayerController>
     public void OnEscape(InputAction.CallbackContext context)
     {
         Debug.Log("Escape");
+    }
+
+    private Int3 CalculateBaseTargetPosition(int range)
+    {
+        Int3 currentPosition = BlockSystemManager.Instance.AlignedSystem.GetBlockLocationByWorldPosition(transform.position).AlignedLocation;
+
+        return BlockSystemManager.Instance.AlignedSystem.GetLocationAtRange(currentPosition, Int3.PlusX, range);
     }
 }

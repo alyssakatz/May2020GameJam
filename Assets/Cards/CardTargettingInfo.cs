@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 public struct CardTargettingInfo
 {
-    public readonly Block targetBlock;
-    public CardTargettingInfo(Block targetBlock)
+    public readonly Int3 targetLocation;
+    public CardTargettingInfo(Int3 targetLocation)
     {
-        this.targetBlock = targetBlock;
+        this.targetLocation = targetLocation;
     }
 }
