@@ -5,7 +5,9 @@ using UnityEngine;
 public class CoreTimer : Singleton<CoreTimer>
 {
     [SerializeField] private float PulseTime;
-    private int CurrentPulse;
+    private int PulsesSinceStart;
+    private float LastPulseTime;
+    public float PulseFill => (Time.time - LastPulseTime) / PulseTime;
 
     private bool _running;
     public bool Running
@@ -27,13 +29,15 @@ public class CoreTimer : Singleton<CoreTimer>
         Running = true;
     }
 
+
     IEnumerator Timer()
     {
         while(Running)
         {
             yield return new WaitForSeconds(PulseTime);
             OnPulse.Invoke();
-            CurrentPulse++;
+            PulsesSinceStart++;
+            LastPulseTime = Time.time;
         }
     }
 }
