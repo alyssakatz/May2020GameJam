@@ -4,7 +4,8 @@ using UnityEngine.UI;
 public class CardIcon : MonoBehaviour
 {
     public int CardIndex;
-    public CardInfo Card;
+    public Playspace.Hand Position;
+    private CardInfo Card;
     private bool CardIconIsDirty;
     private Image UiIcon;
 

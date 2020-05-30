@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 using System.Linq;
 
-public class Playspace
+public class Playspace : Singleton<Playspace>
 { 
     private System.Random DeckRNG;
     private Queue<CardInfo> Deck;
@@ -61,19 +61,20 @@ public class Playspace
 
     public void DiscardCard(CardInfo? card)
     {
-        card = null;
+        if(card != null)
+        {
+            Discard.Push((CardInfo) card);
+            card = null;
+        }
     }
 
     public void DrawCard(CardInfo? card)
     {
-        if(card == null)
+        if (Deck.Count == 0)
         {
-            if(Deck.Count == 0)
-            {
-                RefreshDiscard();
-            }
-            card = Deck.Dequeue();
+            RefreshDiscard();
         }
+        card = card ?? Deck.Dequeue();
     }
 
     public CardInfo? CardAtPosition(Hand position)
