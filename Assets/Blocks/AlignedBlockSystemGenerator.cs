@@ -17,6 +17,12 @@ public class AlignedBlockSystemGenerator : BlockSystemGenerator
 
     public override Block[,,] GenerateBlocks(BlockSystem AlignedBlockSystem)
     {
+        while (!BlockSystemManager.Instance.PlayerSystem.AreBlocksGenerated || !BlockSystemManager.Instance.EnemySystem.AreBlocksGenerated)
+        {
+            // Wait for your dependencies to finish
+            // TODO coroutine? Event?
+        }
+
         // Positive vs negative is a bit more generic than left/right or up/down
         BlockSystem positiveSide = null;
         BlockSystem negativeSide = null;
