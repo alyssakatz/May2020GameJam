@@ -9,8 +9,12 @@ public class BlockSystemManager : Singleton<BlockSystemManager>
 
     void Start()
     {
-        
+        StartCoroutine(WaitUntilDependenciesInitialized());
+        AlignedSystem.gameObject.SetActive(true);
+    }
 
-
+    IEnumerator WaitUntilDependenciesInitialized()
+    {
+        yield return new WaitUntil(() => PlayerSystem.AreBlocksGenerated && EnemySystem.AreBlocksGenerated);
     }
 }

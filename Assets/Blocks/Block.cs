@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static BlockSystem;
 
 public class Block : MonoBehaviour
 {
@@ -57,6 +56,11 @@ public class Block : MonoBehaviour
 
     public Block Backward(int numBlocks = 1)
     {
-        return Backward(-numBlocks);
+        return Forward(-numBlocks);
+    }
+
+    public void OnDrawGizmosSelected()
+    {
+        Debug.Log($"{LocalBlockSystem.name}: {LocalLocation} || {AlignedLocation}");
     }
 }

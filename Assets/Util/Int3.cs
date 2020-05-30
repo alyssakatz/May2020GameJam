@@ -29,5 +29,10 @@ public struct Int3
     public static readonly Int3 PlusZ = new Int3(0, 0, 1);
     public static readonly Int3 MinusZ = new Int3(0, 0, -1);
     public static readonly Int3 Zero = new Int3(0, 0, 0);
+
+    public override string ToString()
+    {
+        return $"({x}, {y}. {z})";
+    }
 }
 
