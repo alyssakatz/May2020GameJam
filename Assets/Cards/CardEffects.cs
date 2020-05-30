@@ -4,10 +4,21 @@ using UnityEngine;
 
 public class CardEffects
 {
-    public static void DoNothing()
+    public static void DoNothing(CardTargettingInfo info)
     {
 
     }
+    
+    /* public static void BreakHighestBlockAtRangeFromLocation(Int3 origin, Int3 direction, int range)
+    {
+        Int3 target = BlockSystemManager.Instance.AlignedSystem.GetLocationAtRange(origin, direction, range);
+        Int3? highestSolidTarget = BlockSystemManager.Instance.AlignedSystem.GetHighestSolidLocation(target);
+
+        if (highestSolidTarget)
+        {
+            BlockSystemManager.Instance.AlignedSystem.Break((Int3)highestSolidTarget);
+        }
+    } */
 
     public static void RandomlyDissolveTopLayer(BlockSystem blocks, float percentage, float duration)
     {

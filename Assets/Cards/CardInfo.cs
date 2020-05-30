@@ -10,7 +10,8 @@ public struct CardInfo
     public int? BaseRange;
     public bool CanTarget;
     public int TargetingRange;
-    public Action Execute;
+    public Action<CardTargettingInfo> Execute;
+    public float LoadTime;
 
     public Sprite Icon => Resources.Load<Sprite>(IconLocation);
 }

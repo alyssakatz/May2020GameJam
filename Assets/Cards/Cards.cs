@@ -9,10 +9,11 @@
         BaseRange = null,
         CanTarget = false,
         TargetingRange = 0,
-        Execute = () =>
+        Execute = (CardTargettingInfo info) =>
         {
             CardEffects.RandomlyDissolveTopLayer(BlockSystemManager.Instance.EnemySystem, 0.5f, 5);
-        }
+        },
+        LoadTime = 10
     };
 
     private static CardInfo UITestCard2 = new CardInfo
@@ -24,7 +25,11 @@
         BaseRange = 4,
         CanTarget = true,
         TargetingRange = 2,
-        Execute = CardEffects.DoNothing
+        Execute = (CardTargettingInfo info) =>
+        {
+
+        },
+        LoadTime = 5
     };
 
     private static CardInfo UITestCard3 = new CardInfo
@@ -36,7 +41,8 @@
         BaseRange = 2,
         CanTarget = false,
         TargetingRange = 0,
-        Execute = CardEffects.DoNothing
+        Execute = CardEffects.DoNothing,
+        LoadTime = 10
     };
 
     // this needs to be after all CardInfo

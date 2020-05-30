@@ -56,30 +56,26 @@ public class BlockSystem : MonoBehaviour
 
     public Int3? GetHighestSolidLocation(int x, int z)
     {
-        for(int y = blocks.GetLength(1) - 1; y >= 0; y--)
+        if (!IsInBlockSystem(x, 0, z)) return null;
+        for (int y = blocks.GetLength(1) - 1; y >= 0; y--)
         {
             if (blocks[x, y, z]) return blocks[x, y, z].LocalLocation;
         }
         return null;
     }
 
-    public Block GetHighestSolidBlock(Int3 location)
+    public Int3 GetLocationAtRange(Int3 origin, Int3 direction, int distance)
     {
-        return GetHighestSolidBlock(location.x, location.z);
-    }
-
-    public Block GetHighestSolidBlock(int x, int z)
-    {
-        for (int y = blocks.GetLength(1) - 1; y >= 0; y--)
-        {
-            if (blocks[x, y, z]) return blocks[x, y, z];
-        }
-        return null;
+        return origin + direction * distance;
     }
 
     public bool IsInBlockSystem(Int3 location)
     {
-        return location.x >= 0 && location.y >= 0 && location.z >= 0 && location.x < blocks.GetLength(0) && location.y < blocks.GetLength(1) && location.z < blocks.GetLength(2);
+        return IsInBlockSystem(location.x, location.y, location.z);
+    }
+    public bool IsInBlockSystem(int x, int y, int z)
+    {
+        return x >= 0 && y >= 0 && z >= 0 && x < blocks.GetLength(0) && y < blocks.GetLength(1) && z < blocks.GetLength(2);
     }
 
     public Int3 WorldToGridLocation(Vector3 worldLocation)
