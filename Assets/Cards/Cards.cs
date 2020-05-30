@@ -11,7 +11,7 @@
         TargetingRange = 0,
         Execute = () =>
         {
-            CardEffects.RandomlyDissolveTopLayer(BlockSystem.EnemySystem, 0.5f, 5);
+            CardEffects.RandomlyDissolveTopLayer(BlockSystemManager.Instance.EnemySystem, 0.5f, 5);
         }
     };
 
