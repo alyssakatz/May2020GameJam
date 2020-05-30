@@ -40,7 +40,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""id"": ""199789e0-0525-4c97-b468-cf3c0724b42d"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Tap,SlowTap""
                 },
                 {
                     ""name"": ""PlayCard2"",
@@ -48,7 +48,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""id"": ""d00896d2-1aae-4206-90b4-783c859e1d59"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Tap,SlowTap""
                 },
                 {
                     ""name"": ""PlayCard3"",
@@ -56,7 +56,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""id"": ""1f41fbcb-5239-457d-af08-3849722902ab"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Tap,SlowTap""
                 },
                 {
                     ""name"": ""Escape"",
