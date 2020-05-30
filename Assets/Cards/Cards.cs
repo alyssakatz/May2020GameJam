@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class Cards
+﻿public class Cards
 {
     private static CardInfo UITestCard1 = new CardInfo
     {
