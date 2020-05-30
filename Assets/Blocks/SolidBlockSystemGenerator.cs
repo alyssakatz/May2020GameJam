@@ -6,7 +6,7 @@ public class SolidBlockSystemGenerator : BlockSystemGenerator
 
     public int Size;
     
-    public override Block[,,] GenerateBlocks(BlockSystem blockSystem)
+    public override Block[,,] GenerateBlocks(BlockSystem localBlockSystem)
     {
         Block[,,] blocks = new Block[Size, Size, Size];
         for (int x = 0; x < Size; x++)
@@ -16,8 +16,7 @@ public class SolidBlockSystemGenerator : BlockSystemGenerator
                 for (int z = 0; z < Size; z++)
                 {
                     Block block = Instantiate(BlockPrefab).GetComponent<Block>();
-                    block.Location = new Int3(x, y, z);
-                    block.BlockSystem = blockSystem;
+                    block.Initialize(localBlockSystem, new Int3(x, y, z));
                     blocks[x, y, z] = block;
                 }
             }

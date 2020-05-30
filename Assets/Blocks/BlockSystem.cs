@@ -2,39 +2,43 @@
 
 public class BlockSystem : MonoBehaviour
 {
-    public static BlockSystem PlayerSystem;
-    public static BlockSystem EnemySystem;
+    public BlockSystemGenerator blockGenerator;
 
-    public bool PlayerControlled;
     public const int BlockSize = 1;
+
+    public bool AreBlocksGenerated = false;
     
     Block[,,] blocks;
-    [SerializeField]
-    BlockSystemGenerator blockGenerator;
     
     public Int3 GetDimensions()
     {
         return new Int3(blocks.GetLength(0), blocks.GetLength(1), blocks.GetLength(2));
     }
-    public Vector3 GetBlockWWorldPosition(Int3 location)
+
+    public Block GetBlockByLocation(Int3 location)
     {
-        return GetBlockWorldPosition(location.x, location.y, location.z);
+        return GetBlockByLocation(location.x, location.y, location.z);
     }
-    public Vector3 GetBlockWorldPosition(int x, int y, int z)
+
+    public Block GetBlockByLocation(int x, int y, int z)
+    {
+        return blocks[x, y, z];
+    }
+
+    public Vector3 GetBlockWorldPositionByLocation(Int3 location)
+    {
+        return GetBlockWorldPositionByLocation(location.x, location.y, location.z);
+    }
+    public Vector3 GetBlockWorldPositionByLocation(int x, int y, int z)
     {
         return transform.position + new Vector3(x * BlockSize, y * BlockSize, z * BlockSize);
     }
 
-    public Block GetBlockByWorldPosition(int x, int y, int z)
-    {
-        return GetBlockByWorldPosition(new Vector3(x, y, z));
-    }
-
-    public Block GetBlockByWorldPosition(Vector3 worldPosition)
+    public Block GetBlockLocationByWorldPosition(Vector3 worldPosition)
     {
         // Make sure to start above the top of the tallest block
         // Raycast will ignore colliders that overlap its origin
-        worldPosition.y = transform.position.y + blocks.GetLength(2) * BlockSize;
+        worldPosition.y = transform.position.y + blocks.GetLength(1) * BlockSize;
 
         int blocksLayerMask = 1 << 8;
         RaycastHit hit;
@@ -45,11 +49,30 @@ public class BlockSystem : MonoBehaviour
         return null;
     }
 
+    public Int3? GetHighestSolidLocation(Int3 location)
+    {
+        return GetHighestSolidLocation(location.x, location.z);
+    }
+
     public Int3? GetHighestSolidLocation(int x, int z)
     {
-        for(int y = blocks.GetLength(2) - 1; y >= 0; y--)
+        for(int y = blocks.GetLength(1) - 1; y >= 0; y--)
         {
-            if (blocks[x, y, z]) return new Int3(x, y, z);
+            if (blocks[x, y, z]) return blocks[x, y, z].LocalLocation;
+        }
+        return null;
+    }
+
+    public Block GetHighestSolidBlock(Int3 location)
+    {
+        return GetHighestSolidBlock(location.x, location.z);
+    }
+
+    public Block GetHighestSolidBlock(int x, int z)
+    {
+        for (int y = blocks.GetLength(1) - 1; y >= 0; y--)
+        {
+            if (blocks[x, y, z]) return blocks[x, y, z];
         }
         return null;
     }
@@ -66,28 +89,15 @@ public class BlockSystem : MonoBehaviour
         Destroy(block.gameObject);
     }
 
+    public void Break(Block block)
+    {
+        blocks[block.LocalLocation.x, block.LocalLocation.y, block.LocalLocation.z] = null;
+        Destroy(block.gameObject);
+    }
+
     void Start()
     {
-        if (PlayerControlled)
-        {
-            PlayerSystem = this;
-        }else
-        {
-            EnemySystem = this;
-        }
-
         blocks = blockGenerator.GenerateBlocks(this);
-        for (int x = 0; x < blocks.GetLength(0); x++)
-        {
-            for (int y = 0; y < blocks.GetLength(1); y++)
-            {
-                for (int z = 0; z < blocks.GetLength(2); z++)
-                {
-                    blocks[x,y,z].name = $"{this.gameObject.name}: {blocks[x,y,z].name} {x} {y} {z}";
-                    blocks[x, y, z].transform.parent = this.transform;
-                    blocks[x, y, z].transform.position = GetBlockWorldPosition(x, y, z);
-                }
-            }
-        }
+        AreBlocksGenerated = true;
     }
 }
