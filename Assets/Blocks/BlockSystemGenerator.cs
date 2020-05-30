@@ -2,5 +2,5 @@ using UnityEngine;
 
 public abstract class BlockSystemGenerator : MonoBehaviour
 {
-    public abstract Block[,,] GenerateBlocks();
+    public abstract Block[,,] GenerateBlocks(BlockSystem blockSystem);
 }
