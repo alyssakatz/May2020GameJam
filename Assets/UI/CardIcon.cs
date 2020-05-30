@@ -3,7 +3,8 @@ using UnityEngine.UI;
 
 public class CardIcon : MonoBehaviour
 {
-    public CardTemplate Card;
+    public int CardIndex;
+    public CardInfo Card;
     private bool CardIconIsDirty;
     private Image UiIcon;
 
@@ -11,11 +12,7 @@ public class CardIcon : MonoBehaviour
     void Start()
     {
         UiIcon = GetComponent<Image>();
-        if(!UiIcon)
-        {
-            Debug.Log("why");
-        }
-        Card = new UIExampleCard();
+        Card = Cards.CardList[CardIndex];
         CleanCardInfo();
     }
 
@@ -31,7 +28,7 @@ public class CardIcon : MonoBehaviour
 
     void CleanCardInfo()
     {
-        Debug.Log("here");
-        UiIcon.sprite = Card.Info.Icon;
+        Debug.Log(Card.Icon);
+        UiIcon.sprite = Card.Icon;
     }
 }

@@ -208,6 +208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b91f04fd0e3dd34787b761f27dfbe60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CardIndex: 0
 --- !u!1 &259403718
 GameObject:
   m_ObjectHideFlags: 0
@@ -571,6 +572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b91f04fd0e3dd34787b761f27dfbe60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CardIndex: 1
 --- !u!1 &1009774827
 GameObject:
   m_ObjectHideFlags: 0
@@ -724,3 +726,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b91f04fd0e3dd34787b761f27dfbe60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CardIndex: 2

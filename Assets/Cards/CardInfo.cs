@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 
 public struct CardInfo
@@ -8,6 +6,8 @@ public struct CardInfo
     public string Name;
     public string RulesText;
     public string FlavorText;
-    public Sprite Icon;
+    public string IconLocation;
     public Action Execute;
+
+    public Sprite Icon => Resources.Load<Sprite>(IconLocation);
 }
