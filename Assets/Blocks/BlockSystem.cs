@@ -77,6 +77,22 @@ public class BlockSystem : MonoBehaviour
         return null;
     }
 
+    public bool IsInBlockSystem(Int3 location)
+    {
+        return location.x >= 0 && location.y >= 0 && location.z >= 0 && location.x < blocks.GetLength(0) && location.y < blocks.GetLength(1) && location.z < blocks.GetLength(2);
+    }
+
+    public Int3 WorldToGridLocation(Vector3 worldLocation)
+    {
+        Vector3 distanceFromOrigin = worldLocation - this.transform.position;
+
+        Vector3 blocksFromOrigin = distanceFromOrigin / BlockSize;
+
+        Vector3 clampedBlocksFromOrigin = new Vector3(Mathf.Clamp(blocksFromOrigin.x, 0, blocks.GetLength(0)), Mathf.Clamp(blocksFromOrigin.y, 0, blocks.GetLength(1)), Mathf.Clamp(blocksFromOrigin.z, 0, blocks.GetLength(2)));
+
+        return new Int3(Mathf.RoundToInt(clampedBlocksFromOrigin.x), Mathf.RoundToInt(clampedBlocksFromOrigin.y), Mathf.RoundToInt(clampedBlocksFromOrigin.z));
+    }
+
     public void Break(Int3 location)
     {
         Break(location.x, location.y, location.z);
