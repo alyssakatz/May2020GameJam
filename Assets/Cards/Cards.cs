@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Cards
 {
-    public CardInfo[] CardList =
+    public static CardInfo[] CardList =
     {
         UITestCard
     };
