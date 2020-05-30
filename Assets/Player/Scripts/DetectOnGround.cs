@@ -10,7 +10,6 @@ public class DetectOnGround : MonoBehaviour
 
     void OnTriggerEnter(Collider collider)
     {
-        Debug.Log("OnCollisionEnter");
         PlayerController.IsGrounded = true;
     }
 }

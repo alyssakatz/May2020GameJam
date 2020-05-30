@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Interactions;
 
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(Rigidbody))]
@@ -14,7 +15,6 @@ public class PlayerController : MonoBehaviour
 
     [ReadOnly]
     [SerializeField]
-    [Tooltip("Used for debugging purposes only; not sampled in FixedUpdate")]
     private Vector2 MovementVector;
 
     public float MinimumMovementThresholdl = 0.05f;
@@ -23,6 +23,13 @@ public class PlayerController : MonoBehaviour
     public float JumpSpeed = 1.0f;
 
     public bool IsGrounded = true;
+    public bool IsAnchored = false;
+
+    public float ContinuousTargetingDelay = 0.5f;
+    private Block _targetBlock;
+    private float _holdTime = 0.0f;
+    private int _samples = 0;
+    private Vector2 _sumTargetingDirection = new Vector2(0, 0);
 
     void Awake()
     {
@@ -31,21 +38,79 @@ public class PlayerController : MonoBehaviour
         _playerInputActions.Player.Move.started += ctx => MovementVector = ctx.ReadValue<Vector2>();
         _playerInputActions.Player.Move.performed += ctx => MovementVector = ctx.ReadValue<Vector2>();
         _playerInputActions.Player.Jump.started += OnJump;
-        _playerInputActions.Player.PlayCard1.started += OnPlayCard1;
-        _playerInputActions.Player.PlayCard2.started += OnPlayCard2;
-        _playerInputActions.Player.PlayCard3.started += OnPlayCard3;
+
+        SubscribeToCardEvents(_playerInputActions.Player.PlayCard1, Playspace.Instance.LeftCard);
+        SubscribeToCardEvents(_playerInputActions.Player.PlayCard2, Playspace.Instance.MiddleCard);
+        SubscribeToCardEvents(_playerInputActions.Player.PlayCard3, Playspace.Instance.RightCard);
+
         _playerInputActions.Player.Escape.started += OnEscape;
+    }
+
+    /* Initially interpret input as a tap.
+     * If the button is pressed for too long for it to be a tap, cancel the tap action and start the slowtap action.
+     * If the button is released, perform the action
+     */
+    void SubscribeToCardEvents(InputAction input, CardInfo? card)
+    {
+        input.started +=
+            context =>
+            {
+                if (card != null && card.Value.CanTarget && context.interaction is SlowTapInteraction)
+                {
+                    OnTarget(context, card);
+                }
+            };
+
+        input.performed +=
+            context =>
+            {
+                if (card != null)
+                {
+                    OnPlayCard(context, card);
+                }
+            };
+
+        // Is this necessary if Tap gets priority?
+        input.canceled +=
+            context =>
+            {
+                if (card != null && context.interaction is SlowTapInteraction)
+                {
+                    OnPlayCard(context, card);
+                }
+            };
     }
 
     void FixedUpdate()
     {
-        Vector2 movementVector = ApplyThresholding(_playerInputActions.Player.Move.ReadValue<Vector2>());
-        Vector3 velocity = new Vector3(movementVector.x, 0, movementVector.y) * MovementSpeed;
-        
-        // Respect velocity from jumping
-        velocity.y = _rigidBody.velocity.y;
+        if (IsAnchored)
+        {
+            _holdTime += Time.deltaTime;
+            _samples += 1;
+            _sumTargetingDirection += ApplyThresholding(_playerInputActions.Player.Move.ReadValue<Vector2>());
+            
+            if (_holdTime >= ContinuousTargetingDelay)
+            {
+                Vector2 averageTargetingDirection = ApplyThresholding(_sumTargetingDirection / _samples);
 
-        _rigidBody.velocity = velocity;
+                // TODO Select next tile
+
+                // Reset
+                _holdTime -= ContinuousTargetingDelay;
+                _samples = 0;
+                _sumTargetingDirection = new Vector2(0, 0);
+            }
+        }
+        else
+        {
+            Vector2 movementVector = ApplyThresholding(_playerInputActions.Player.Move.ReadValue<Vector2>());
+            Vector3 velocity = new Vector3(movementVector.x, 0, movementVector.y) * MovementSpeed;
+
+            // Respect velocity from jumping
+            velocity.y = _rigidBody.velocity.y;
+
+            _rigidBody.velocity = velocity;
+        }
     }
 
     // Negates controller drift
@@ -66,11 +131,23 @@ public class PlayerController : MonoBehaviour
         _playerInputActions.Disable();
     }
 
+    public void OnPlayCard(InputAction.CallbackContext context, CardInfo? card)
+    {
+        IsAnchored = false;
+        Debug.Log("Playing card " + card);
+    }
+
+    public void OnTarget(InputAction.CallbackContext context, CardInfo? card)
+    {
+        IsAnchored = true;
+        _holdTime = 0.0f;
+        _samples = 0;
+        _sumTargetingDirection = new Vector2();
+        Debug.Log("Targeting with card " + card);
+    }
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        Debug.Log("Jump");
-
         if (IsGrounded)
         {
             Vector3 impulse = new Vector3(0, 1, 0) * JumpSpeed;
@@ -79,20 +156,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void OnPlayCard1(InputAction.CallbackContext context)
-    {
-        Debug.Log("PlayCard1");
-    }
-
-    public void OnPlayCard2(InputAction.CallbackContext context)
-    {
-        Debug.Log("PlayCard2");
-    }
-
-    public void OnPlayCard3(InputAction.CallbackContext context)
-    {
-        Debug.Log("PlayCard3");
-    }
 
     public void OnEscape(InputAction.CallbackContext context)
     {
