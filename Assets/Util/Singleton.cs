@@ -15,7 +15,7 @@ public class Singleton<T> : MonoBehaviour where T : Singleton<T>
                     _instance = (T)FindObjectOfType(typeof(T));
                     if(_instance == null)
                     {
-                        Debug.LogWarning("You're trying to access a singleton that's not set in editor!");
+                        Debug.LogWarning("You're trying to access a singleton that's not currently loaded!");
                     }
                 }
             }
