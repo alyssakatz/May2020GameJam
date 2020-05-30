@@ -11,6 +11,12 @@ public class CardIcon : MonoBehaviour
     void Start()
     {
         UiIcon = GetComponent<Image>();
+        if(!UiIcon)
+        {
+            Debug.Log("why");
+        }
+        Card = new UIExampleCard();
+        CleanCardInfo();
     }
 
     // Update is called once per frame
@@ -18,8 +24,14 @@ public class CardIcon : MonoBehaviour
     {
         if(CardIconIsDirty)
         {
-            UiIcon.sprite = Card.Icon;
+            CleanCardInfo();   
             CardIconIsDirty = false;
         }
+    }
+
+    void CleanCardInfo()
+    {
+        Debug.Log("here");
+        UiIcon.sprite = Card.Info.Icon;
     }
 }
