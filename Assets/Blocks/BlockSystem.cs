@@ -1,26 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BlockSystem : MonoBehaviour
 {
-    public const int BlockSize = 1;
-    public struct Int3
-    {
-        public readonly int x, y, z;
-        
-        public Int3(int x, int y, int z)
-        {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-    }
+    public static BlockSystem PlayerSystem;
+    public static BlockSystem EnemySystem;
 
+    public bool PlayerControlled;
+    public const int BlockSize = 1;
+    
     Block[,,] blocks;
     [SerializeField]
     BlockSystemGenerator blockGenerator;
-
+    
+    public Int3 GetDimensions()
+    {
+        return new Int3(blocks.GetLength(0), blocks.GetLength(1), blocks.GetLength(2));
+    }
     public Vector3 GetBlockPosition(Int3 location)
     {
         return GetBlockPosition(location.x, location.y, location.z);
@@ -30,8 +25,37 @@ public class BlockSystem : MonoBehaviour
         return transform.position + new Vector3(x * BlockSize, y * BlockSize, z * BlockSize);
     }
 
+    public Int3? GetHighestSolidLocation(int x, int z)
+    {
+        for(int y = blocks.GetLength(2) - 1; y >= 0; y--)
+        {
+            if (blocks[x, y, z]) return new Int3(x, y, z);
+        }
+        return null;
+    }
+
+    public void Break(Int3 location)
+    {
+        Break(location.x, location.y, location.z);
+    }
+
+    public void Break(int x, int y, int z)
+    {
+        Block block = blocks[x, y, z];
+        blocks[x, y, z] = null;
+        Destroy(block.gameObject);
+    }
+
     void Start()
     {
+        if (PlayerControlled)
+        {
+            PlayerSystem = this;
+        }else
+        {
+            EnemySystem = this;
+        }
+
         blocks = blockGenerator.GenerateBlocks();
         for (int x = 0; x < blocks.GetLength(0); x++)
         {
