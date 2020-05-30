@@ -31,7 +31,6 @@ public class CoreTimer : Singleton<CoreTimer>
         StartCoroutine(Timer());
     }
 
-
     IEnumerator Timer()
     {
         while(true)
