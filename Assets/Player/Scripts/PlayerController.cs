@@ -209,6 +209,7 @@ public class PlayerController : MonoSingleton<PlayerController>
     {
         if (IsGrounded)
         {
+            GetComponentInChildren<DetectOnGround>().UnlockY();
             Vector3 impulse = new Vector3(0, 1, 0) * JumpSpeed;
             _rigidBody.AddForce(impulse, ForceMode.Impulse);
             IsGrounded = false;

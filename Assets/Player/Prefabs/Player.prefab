@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 809740210345707320}
   - component: {fileID: 3715826750533077525}
   - component: {fileID: 9062461324335888386}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Feet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,12 +40,12 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2125832172731964004}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: d5367d61a2b53f442852b1fd3e477636, type: 2}
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.95, y: 0.1, z: 0.95}
-  m_Center: {x: 0, y: -0.95, z: 0}
+  m_Size: {x: 0.7, y: 0.2, z: 0.7}
+  m_Center: {x: 0, y: -0.9, z: 0}
 --- !u!114 &3715826750533077525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58,8 +58,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1d7b5f7d84c31c49811499033f8863f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Collider: {fileID: 809740210345707320}
   PlayerController: {fileID: 4252307051669834147}
+  YLockCooldownInSeconds: 0.25
 --- !u!54 &9062461324335888386
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -70,11 +70,11 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0.005
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!1 &4252307051669834156
 GameObject:
@@ -89,9 +89,9 @@ GameObject:
   - component: {fileID: 4252307051669834150}
   - component: {fileID: 4252307051669834145}
   - component: {fileID: 4252307051669834147}
-  - component: {fileID: 1667199390722395402}
+  - component: {fileID: 5920819785705330669}
   - component: {fileID: 6049152711988981564}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -203,23 +203,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0aadffa25d799b49a0ec8f423977594, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playedCardPrefab: {fileID: 0}
   MovementVector: {x: 0, y: 0}
   MinimumMovementThresholdl: 0.05
   MovementSpeed: 5
   JumpSpeed: 5
   IsGrounded: 1
---- !u!65 &1667199390722395402
-BoxCollider:
+  IsAnchored: 0
+  ContinuousTargetingDelay: 0.5
+  debug: 
+--- !u!136 &5920819785705330669
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4252307051669834156}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 2483c2f6029af3642a0d920215e3800c, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 2, z: 1}
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &6049152711988981564
 Rigidbody:
