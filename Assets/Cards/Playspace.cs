@@ -10,6 +10,7 @@ public class Playspace : Singleton<Playspace>
     private System.Random DeckRNG;
     private Queue<CardInfo> Deck;
     private Stack<CardInfo> Discard;
+    private static bool _isInitialized = false;
 
     public enum Hand
     {
@@ -27,11 +28,13 @@ public class Playspace : Singleton<Playspace>
     {
         DeckRNG = new System.Random();
         Deck = new Queue<CardInfo>();
+        Discard = new Stack<CardInfo>();
         foreach (int i in cardsInDeck)
         {
             Deck.Enqueue(Cards.CardList[i]);
         }
         ShuffleDeck();
+        _isInitialized = true;
     }
 
     public void ShuffleDeck()

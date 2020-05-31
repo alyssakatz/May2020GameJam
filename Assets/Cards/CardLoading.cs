@@ -9,7 +9,6 @@ public class CardLoading : MonoBehaviour
     public CardTargettingInfo CardTargettingInfo;
     public Block source;
     public Image loadingBar;
-    // Start is called before the first frame update
     float startTime;
     void Start()
     {
@@ -22,7 +21,6 @@ public class CardLoading : MonoBehaviour
         }));
     }
 
-    // Update is called once per frame
     void Update()
     {
         loadingBar.fillAmount = (Time.time - startTime) / CardInfo.LoadTime;
