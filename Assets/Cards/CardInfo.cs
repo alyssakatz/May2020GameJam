@@ -14,4 +14,6 @@ public struct CardInfo
     public float LoadTime;
 
     public Sprite Icon => Resources.Load<Sprite>(IconLocation);
+
+    public static implicit operator bool(CardInfo? info) => info != null;
 }
