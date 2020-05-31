@@ -9,7 +9,7 @@ public class Playspace : Singleton<Playspace>
 { 
     private System.Random DeckRNG;
     private Queue<CardInfo> Deck;
-    private Stack<CardInfo> Discard;
+    private Stack<CardInfo> Discard = new Stack<CardInfo>();
 
     public enum Hand
     {
@@ -49,6 +49,13 @@ public class Playspace : Singleton<Playspace>
         ShuffleDeck();
     }
 
+    public void DiscardHand()
+    {
+        foreach (Hand position in Enum.GetValues(typeof(Hand)))
+        {
+            DiscardCard(ref CardAtPosition(position));
+        }
+    }
     public void DrawCards(bool withDiscard)
     {
         foreach (Hand position in Enum.GetValues(typeof(Hand)))

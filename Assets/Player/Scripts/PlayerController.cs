@@ -83,11 +83,11 @@ public class PlayerController : MonoSingleton<PlayerController>
                         Debug.Log("TARGET" + context.interaction);
                         OnTarget(context, (CardInfo)card);
                     }
-                    else
+                    /*else
                     {
                         Debug.Log("Forward target to play, since card is not targettable." + context.interaction);
                         OnPlayCard(context, (CardInfo)card);
-                    }
+                    }*/
                     
                 }
             };
@@ -185,9 +185,16 @@ public class PlayerController : MonoSingleton<PlayerController>
         memento.CardTargettingInfo = info;
         memento.source = GetCurrentBlock();
 
+        Playspace.Instance.DiscardHand();
+
+        StartCoroutine(Coroutines.WaitThen(5f, () =>
+        {
+            Playspace.Instance.DrawCards(false);
+        }));
+
         IsAnchored = false;
         _targetPosition = null;
-        Debug.Log("Playing card " + card);
+        Debug.Log("Played card " + card);
     }
 
     public void OnTarget(InputAction.CallbackContext context, CardInfo card)
