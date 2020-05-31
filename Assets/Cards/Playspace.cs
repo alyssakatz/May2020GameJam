@@ -27,6 +27,7 @@ public class Playspace : Singleton<Playspace>
     {
         DeckRNG = new System.Random();
         Deck = new Queue<CardInfo>();
+        Discard = new Stack<CardInfo>();
         foreach (int i in cardsInDeck)
         {
             Deck.Enqueue(Cards.CardList[i]);
