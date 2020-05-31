@@ -10,6 +10,7 @@ using UnityEngine.InputSystem.Interactions;
 [DisallowMultipleComponent]
 public class PlayerController : MonoSingleton<PlayerController>
 {
+    public GameObject playedCardPrefab;
     private PlayerInputActions _playerInputActions;
     private Rigidbody _rigidBody => GetComponent<Rigidbody>();
 
@@ -159,8 +160,10 @@ public class PlayerController : MonoSingleton<PlayerController>
 
         CardTargettingInfo info = new CardTargettingInfo((Int3) _targetPosition);
 
-        //this isn't supposed to be how cards are played, there's supposed to be a delay, but ignore that for now.
-        card.Execute(info);
+        CardLoading memento = Instantiate(playedCardPrefab).GetComponent<CardLoading>();
+        memento.CardInfo = card;
+        memento.CardTargettingInfo = info;
+        memento.source = GetCurrentBlock();
 
         IsAnchored = false;
         _targetPosition = null;
@@ -192,15 +195,18 @@ public class PlayerController : MonoSingleton<PlayerController>
         }
     }
 
-
     public void OnEscape(InputAction.CallbackContext context)
     {
         Debug.Log("Escape");
     }
 
+    private Block GetCurrentBlock()
+    {
+        return BlockSystemManager.Instance.AlignedSystem.GetBlockLocationByWorldPosition(transform.position);
+    }
     private Int3 CalculateBaseTargetPosition(int range)
     {
-        Int3 currentPosition = BlockSystemManager.Instance.AlignedSystem.GetBlockLocationByWorldPosition(transform.position).AlignedLocation;
+        Int3 currentPosition = GetCurrentBlock().AlignedLocation;
 
         return BlockSystemManager.Instance.AlignedSystem.GetLocationAtRange(currentPosition, Int3.PlusX, range);
     }
