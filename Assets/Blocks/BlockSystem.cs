@@ -98,7 +98,7 @@ public class BlockSystem : MonoBehaviour
     {
         Block block = blocks[x, y, z];
         blocks[x, y, z] = null;
-        Destroy(block.gameObject);
+        if(block) Destroy(block.gameObject);
     }
 
     public void Break(Block block)

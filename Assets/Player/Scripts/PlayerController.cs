@@ -76,10 +76,19 @@ public class PlayerController : MonoSingleton<PlayerController>
             context =>
             {
                 CardInfo? card = cardLocation();
-                if (card != null && card.Value.CanTarget && context.interaction is SlowTapInteraction)
+                if (card != null && context.interaction is SlowTapInteraction)
                 {
-                    Debug.Log("TARGET" + context.interaction);
-                    OnTarget(context, (CardInfo) card);
+                    if (card.Value.CanTarget)
+                    {
+                        Debug.Log("TARGET" + context.interaction);
+                        OnTarget(context, (CardInfo)card);
+                    }
+                    else
+                    {
+                        Debug.Log("Forward target to play, since card is not targettable." + context.interaction);
+                        OnPlayCard(context, (CardInfo)card);
+                    }
+                    
                 }
             };
 
