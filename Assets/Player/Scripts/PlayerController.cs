@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
+
 
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(Rigidbody))]
@@ -31,6 +34,7 @@ public class PlayerController : MonoSingleton<PlayerController>
     private float _holdTime = 0.0f;
     private int _samples = 0;
     private Vector2 _sumTargetingDirection = new Vector2(0, 0);
+    public string debug;
 
     private void OnDrawGizmos()
     {
@@ -40,8 +44,8 @@ public class PlayerController : MonoSingleton<PlayerController>
         {
             Gizmos.color = Color.yellow;
             Gizmos.DrawSphere(block.transform.position, 0.5f);
+            
         }
-        
     }
     void Awake()
     {
@@ -51,24 +55,27 @@ public class PlayerController : MonoSingleton<PlayerController>
         _playerInputActions.Player.Move.performed += ctx => MovementVector = ctx.ReadValue<Vector2>();
         _playerInputActions.Player.Jump.started += OnJump;
 
-        SubscribeToCardEvents(_playerInputActions.Player.PlayCard1, Playspace.Instance.LeftCard);
-        SubscribeToCardEvents(_playerInputActions.Player.PlayCard2, Playspace.Instance.MiddleCard);
-        SubscribeToCardEvents(_playerInputActions.Player.PlayCard3, Playspace.Instance.RightCard);
+        SubscribeToCardEvents(_playerInputActions.Player.PlayCard1, () => Playspace.Instance.LeftCard);
+        SubscribeToCardEvents(_playerInputActions.Player.PlayCard2, () => Playspace.Instance.MiddleCard);
+        SubscribeToCardEvents(_playerInputActions.Player.PlayCard3, () => Playspace.Instance.RightCard);
 
         _playerInputActions.Player.Escape.started += OnEscape;
+
+        //this is the wrong place to put this... but I need to keep moving here.
+        Playspace.Instance.Initialize(Enumerable.Range(0, Cards.CardList.Length).ToArray());
+        Playspace.Instance.DrawCards(false);
     }
 
     /* Initially interpret input as a tap.
      * If the button is pressed for too long for it to be a tap, cancel the tap action and start the slowtap action.
      * If the button is released, perform the action
      */
-    void SubscribeToCardEvents(InputAction input, CardInfo? card)
+    void SubscribeToCardEvents(InputAction input, Func<CardInfo?> cardLocation)
     {
-        card = Cards.CardList[1]; //the playspace is broken, so I do this.
         input.started +=
             context =>
             {
-                
+                CardInfo? card = cardLocation();
                 if (card != null && card.Value.CanTarget && context.interaction is SlowTapInteraction)
                 {
                     Debug.Log("TARGET" + context.interaction);
@@ -79,7 +86,7 @@ public class PlayerController : MonoSingleton<PlayerController>
         input.performed +=
             context =>
             {
-                
+                CardInfo? card = cardLocation();
                 if (card != null)
                 {
                     Debug.Log("PLAY" + context.interaction);
@@ -90,6 +97,7 @@ public class PlayerController : MonoSingleton<PlayerController>
 
     void FixedUpdate()
     {
+        debug = $"Cards: {Playspace.Instance.LeftCard?.Name} {Playspace.Instance.MiddleCard?.Name} {Playspace.Instance.RightCard?.Name}";
         if (IsAnchored)
         {
             _holdTime += Time.deltaTime;
@@ -152,13 +160,16 @@ public class PlayerController : MonoSingleton<PlayerController>
     public void OnPlayCard(InputAction.CallbackContext context, CardInfo card)
     {
         Debug.Log("Playing card " + card);
+        CardTargettingInfo info;
 
-        if (!_targetPosition && card.BaseRange.HasValue)
+        if (card.BaseRange.HasValue)
         {
-            _targetPosition = CalculateBaseTargetPosition((int)card.BaseRange);
+            if (!_targetPosition) _targetPosition = CalculateBaseTargetPosition((int)card.BaseRange);
+            info = new CardTargettingInfo((Int3)_targetPosition);
+        }else
+        {
+            info = new CardTargettingInfo(null);
         }
-
-        CardTargettingInfo info = new CardTargettingInfo((Int3) _targetPosition);
 
         CardLoading memento = Instantiate(playedCardPrefab).GetComponent<CardLoading>();
         memento.CardInfo = card;
